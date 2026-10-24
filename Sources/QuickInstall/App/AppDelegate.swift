@@ -2,6 +2,7 @@ import AppKit
 import UniformTypeIdentifiers
 
 @main
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private static var instance: AppDelegate?
     private var openedFilesAtLaunch = false

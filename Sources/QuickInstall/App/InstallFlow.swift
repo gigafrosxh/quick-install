@@ -146,7 +146,8 @@ final class DiskImageInstallModel: ObservableObject {
         }
         if config.openAppAfterInstall {
             for url in results.compactMap(\.installedURL) {
-                NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
+                NSWorkspace.shared.openApplication(
+                    at: url, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { _, _ in })
             }
         }
         phase = .finished
