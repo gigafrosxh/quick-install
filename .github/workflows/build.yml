@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          swift --version
+          xcodebuild -version
+
+      - name: Build universal app
+        run: ./scripts/build-app.sh
+
+      - name: Check architectures
+        run: |
+          lipo -archs build/QuickInstall.app/Contents/MacOS/QuickInstall | tee archs.txt
+          grep -q arm64 archs.txt
+          grep -q x86_64 archs.txt
+          plutil -lint build/QuickInstall.app/Contents/Info.plist
+
+      - name: Zip
+        run: ditto -c -k --keepParent build/QuickInstall.app QuickInstall.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QuickInstall
+          path: QuickInstall.zip
